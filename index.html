@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Page Title</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
+	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>	
+</head>
+<body>
+
+<div data-role="page" id="mainpage">
+
+	<div data-role="header">
+		<h1>Page Title</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		    <div class="row">
+      <label for="fileToUpload">Select Files to Upload</label><br />
+        <input type="file" name="filesToUpload[]" id="filesToUpload" capture="images/*" />
+      <output id="filesInfo"></output>
+    </div>
+    <div class="row">
+      <input type="submit" id="clearAppend" value="Upload" />
+    </div>
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4>Page Footer</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+<script>
+$(document).on("pageinit", "#mainpage", function(event){
+	document.getElementById('filesToUpload').addEventListener('change', fileSelect, false);
+	document.getElementById('clearAppend').addEventListener('click', clearAll, false);
+	console.log("ready init");
+});
+function fileSelect(evt) {
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+        var files = evt.target.files;
+ 
+        var result = '';
+        var file;
+        for (var i = 0; file = files[i]; i++) {
+            // if the file is not an image, continue
+            if (!file.type.match('image.*')) {
+                continue;
+            }
+ 
+            reader = new FileReader();
+            reader.onload = (function (tFile) {
+                return function (evt) {
+                    var div = document.createElement('div');
+                    div.innerHTML = '<img style="width: 90px;" src="' + evt.target.result + '" />';
+                    document.getElementById('filesInfo').appendChild(div);
+                };
+            }(file));
+            reader.readAsDataURL(file);
+        }
+    } else {
+        alert('The File APIs are not fully supported in this browser.');
+    }
+}
+
+function clearAll(){
+	$.mobile.changePage(
+  window.location.href,
+  {
+    allowSamePageTransition : false,
+    transition              : 'none',
+    showLoadMsg             : true,
+    reloadPage              : true
+   }
+);
+}
+</script>
+</body>
+</html>
